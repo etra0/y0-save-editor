@@ -6,13 +6,13 @@ use serde::{Serialize, Deserialize};
 #[test]
 fn test_parsing() -> Result<(), Box<dyn std::error::Error>> {
     let mut file = read("./tests/save_test.sav")?;
-    let (_rest, save) = parser::SaveFile::from_bytes((file.as_ref(), 0)).unwrap();
+    let (_rest, mut save) = parser::SaveFile::from_bytes((file.as_ref(), 0)).unwrap();
 
-    let serialized = serde_json::to_string(&save).unwrap();
-
-    let data = save.to_bytes().unwrap();
-
+    // Test serialization
+    let serialized = serde_json::to_string(&save)?;
     println!("{}", serialized);
+
+    let data = save.to_bytes()?;
 
     std::fs::write("test.bin", data)?;
 
