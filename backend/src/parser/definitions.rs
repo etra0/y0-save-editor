@@ -1,7 +1,7 @@
 use deku::prelude::*;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
-#[derive(DekuRead, DekuWrite, Debug, Serialize)]
+#[derive(DekuRead, DekuWrite, Debug, Serialize, Deserialize)]
 #[deku(magic = b"YZFH")]
 pub struct SaveFile {
     #[deku(pad_bytes_before = "0x24")]
@@ -89,7 +89,7 @@ pub struct SaveFile {
 
 }
 
-#[derive(DekuRead, DekuWrite, Debug, Serialize)]
+#[derive(DekuRead, DekuWrite, Debug, Serialize, Deserialize)]
 pub struct SaveTime {
     year: u16,
     month: u16,
@@ -100,7 +100,7 @@ pub struct SaveTime {
     milli: u16
 }
 
-#[derive(DekuRead, DekuWrite, Debug, Serialize)]
+#[derive(DekuRead, DekuWrite, Debug, Serialize, Deserialize)]
 #[deku(type = "u8")]
 pub enum Difficulty {
     Easy = 0x0,
@@ -109,14 +109,14 @@ pub enum Difficulty {
     Extreme
 }
 
-#[derive(DekuRead, DekuWrite, Debug, Serialize)]
+#[derive(DekuRead, DekuWrite, Debug, Serialize, Deserialize)]
 #[deku(type = "u8")]
 pub enum CurrentCharacter {
     Kiryu = 0x1,
     Majima
 }
 
-#[derive(DekuRead, DekuWrite, Debug, Serialize)]
+#[derive(DekuRead, DekuWrite, Debug, Serialize, Deserialize)]
 pub struct Outfit {
     #[deku(bits = "1")]
     pub dod: bool,
@@ -143,7 +143,7 @@ pub struct Outfit {
     _unused: u8
 }
 
-#[derive(DekuRead, DekuWrite, Debug, Serialize)]
+#[derive(DekuRead, DekuWrite, Debug, Serialize, Deserialize)]
 pub struct Item {
     id: u16,
     #[deku(pad_bytes_before = "0x4", pad_bytes_after = "0x8")]
