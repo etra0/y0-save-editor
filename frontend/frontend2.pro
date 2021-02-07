@@ -27,8 +27,8 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../backend/target/debug/release/ -lbackend
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../backend/target/debug/debug/ -lbackend
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../backend/target/debug/ -lbackend.dll
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../backend/target/debug/ -lbackend.dll
 else:unix: LIBS += -L$$PWD/../backend/target/debug/ -lbackend
 
 INCLUDEPATH += $$PWD/../backend/target/debug
