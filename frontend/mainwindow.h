@@ -7,11 +7,13 @@
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QMessageBox>
-#include <QPlainTextEdit>
+#include <QLineEdit>
 #include <QPushButton>
+#include <QCheckBox>
 #include <QVector>
 #include <iostream>
 #include <string>
+#include <map>
 
 using json = nlohmann::json;
 
@@ -34,7 +36,7 @@ private:
   void on_load_button_clicked();
   void on_save_button_clicked();
   void initialize_ui_variables();
-  void on_text_changed(const QPlainTextEdit * el, const std::string & name);
+//  void on_text_changed(const QPlainTextEdit * el, const std::string & name);
 
 private:
   Ui::MainWindow *ui;

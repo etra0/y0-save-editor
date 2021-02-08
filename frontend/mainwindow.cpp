@@ -16,11 +16,34 @@ MainWindow::MainWindow(QWidget *parent)
           [&](const QString &arg) {
             MainWindow::on_input_changed(arg, "difficulty");
           });
-  connect(ui->kiryu_money, &QPlainTextEdit::textChanged, this,
-          [&]() { MainWindow::on_text_changed(ui->kiryu_money, "kiryu_money"); });
+//  connect(ui->kiryu_money, &QLineEdit::textChanged, this,
+//          [&](const QString &arg) { MainWindow::on_input_changed(arg, "kiryu_money"); });
+//  connect(ui->majima_money, &QLineEdit::textChanged, this,
+//          [&](const QString &arg) { MainWindow::on_input_changed(arg, "majima_money"); });
 
   QVector<QWidget *> elements_local{ui->save_button, ui->current_char,
-                                    ui->difficulty, ui->kiryu_money};
+                                    ui->difficulty, ui->kiryu_money, ui->style_dod, ui->style_rush, ui->style_beast,
+                                   ui->style_mdos, ui->style_breaker, ui->style_slugger, ui->majima_money,
+                                   ui->outfit_dod, ui->outfit_dragon, ui->outfit_producer, ui->outfit_judgement, ui->outfit_new_hire};
+
+  std::map<std::string, QCheckBox *> outfits = {
+      {"dod", ui->outfit_dod},
+      {"dragon", ui->outfit_dragon},
+      {"producer", ui->outfit_producer},
+      {"judgement", ui->outfit_judgement},
+      {"new_hire", ui->outfit_new_hire}
+  };
+
+  for (auto const & [key, value] : outfits) {
+      auto key_copy = key;
+      auto value_copy = value;
+      // This is maybe a bit unsafe
+      auto lambda = [key_copy, value_copy, this](int status) {
+          this->savefile["outfit"][key_copy] = value_copy->isChecked();
+      };
+      connect(value, &QCheckBox::stateChanged, this, lambda);
+  }
+
   elements = elements_local;
 
   for (auto &w : elements) {
@@ -37,7 +60,21 @@ void MainWindow::initialize_ui_variables() {
       QString::fromStdString(savefile["difficulty"]));
 
   uint64_t kiryu_money = savefile["kiryu_money"];
-  ui->kiryu_money->setPlainText(QString::fromStdString(std::to_string(kiryu_money)));
+  ui->kiryu_money->setText(QString::fromStdString(std::to_string(kiryu_money)));
+
+  uint64_t majima_money = savefile["majima_money"];
+  ui->majima_money->setText(QString::fromStdString(std::to_string(majima_money)));
+
+  std::cout << savefile << std::endl;
+  // kiryu
+  ui->style_dod->setChecked(savefile["style_dod"]);
+  ui->style_beast->setChecked(savefile["style_beast"]);
+  ui->style_rush->setChecked(savefile["style_rush"]);
+
+  // Majima
+  ui->style_mdos->setChecked(savefile["style_mdos"]);
+  ui->style_breaker->setChecked(savefile["style_breaker"]);
+  ui->style_slugger->setChecked(savefile["style_slugger"]);
 
   for (auto &w : elements) {
     w->setEnabled(true);
@@ -82,8 +119,8 @@ void MainWindow::on_input_changed(const QString &arg, const std::string &name) {
   savefile[name] = arg.toStdString();
 }
 
-void MainWindow::on_text_changed(const QPlainTextEdit * el, const std::string & name) {
-    QString t = el->toPlainText();
-    savefile[name] = t.toStdString();
+//void MainWindow::on_text_changed(const QPlainTextEdit * el, const std::string & name) {
+//    QString t = el->toPlainText();
+//    savefile[name] = t.toStdString();
 
-}
+//}

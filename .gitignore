@@ -1,1 +1,4 @@
 *.pro.*
+test.bin
+build-*
+*.new
