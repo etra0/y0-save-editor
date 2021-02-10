@@ -14,8 +14,6 @@ fn test_parsing() -> Result<(), Box<dyn std::error::Error>> {
 
     let data = save.to_bytes()?;
 
-    std::fs::write("test.bin", data)?;
-
     dbg!(save);
 
     Ok(())

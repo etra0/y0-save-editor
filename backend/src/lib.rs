@@ -8,7 +8,7 @@ use std::os::raw::c_char;
 /// # Safety
 /// If you don't free the string it will be a dangling pointer.
 #[no_mangle]
-pub unsafe extern "system" fn parse_file(name: *const c_char) -> *const c_char {
+pub unsafe extern "C" fn parse_file(name: *const c_char) -> *const c_char {
     match parser::parse_file(name) {
         Ok(p) => p,
         Err(e) => {
@@ -26,7 +26,7 @@ pub unsafe extern "system" fn parse_file(name: *const c_char) -> *const c_char {
 /// # Safety
 /// If you call it on a wrong pointer it could cause a crash.
 #[no_mangle]
-pub unsafe extern "system" fn free_rust_string(s: *mut c_char) {
+pub unsafe extern "C" fn free_rust_string(s: *mut c_char) {
     if s.is_null() {
         println!("Pointer was null");
         return;
@@ -36,7 +36,7 @@ pub unsafe extern "system" fn free_rust_string(s: *mut c_char) {
 }
 
 #[no_mangle]
-pub extern "system" fn write_savegame(
+pub extern "C" fn write_savegame(
     original_file: *const c_char,
     modified_json: *const c_char,
 ) -> u32 {
