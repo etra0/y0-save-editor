@@ -5,20 +5,14 @@ use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::path::Path;
 
-pub(crate) fn parse_file(name: *const c_char) -> Result<*const c_char, Box<dyn std::error::Error>> {
-    let name = to_rust_string(name)?;
-
-    let file = try_open_file(&name)?;
+pub fn parse_file(name: &str) -> Result<String, Box<dyn std::error::Error>> {
+    let file = try_open_file(name)?;
 
     let (_rest, save) = definitions::SaveFile::from_bytes((file.as_ref(), 0))?;
 
-    let serialized = serde_json::to_string(&save)?;
+    let serialized = serde_json::to_string_pretty(&save)?;
 
-    let result = CString::new(serialized)?;
-    let p = result.as_ptr();
-    std::mem::forget(result);
-
-    Ok(p)
+    Ok(serialized)
 }
 
 fn try_open_file(f: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
@@ -30,24 +24,14 @@ fn try_open_file(f: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     std::fs::read(path).map_err(|_| "Couldn't read the file".into())
 }
 
-pub(crate) fn to_rust_string(s: *const c_char) -> Result<String, Box<dyn std::error::Error>> {
-    assert!(!s.is_null());
-    let s = unsafe { CStr::from_ptr(s) };
-    let s = s.to_str()?;
 
-    Ok(String::from(s))
-}
-
-pub(crate) fn write_savegame(
-    original_file: *const c_char,
-    modified_json: *const c_char,
+pub fn write_savegame(
+    original_file:  &str,
+    modified_json: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let original_file = to_rust_string(original_file)?;
-    let modified_json = to_rust_string(modified_json)?;
-
-    let mut file_bytes = try_open_file(&original_file)?;
+    let mut file_bytes = try_open_file(original_file)?;
     let (_, save) = definitions::SaveFile::from_bytes((file_bytes.as_ref(), 0))?;
-    let modified_save: definitions::SaveFile = serde_json::from_str(&modified_json)?;
+    let modified_save: definitions::SaveFile = serde_json::from_str(modified_json)?;
 
     let modified_save_bytes = modified_save.to_bytes()?;
     let save_bytes = save.to_bytes()?;
@@ -59,7 +43,7 @@ pub(crate) fn write_savegame(
         file_bytes[off] = modified_save_bytes[off];
     }
 
-    let new_file_name = original_file + ".new";
+    let new_file_name = original_file.to_string() + ".new";
     std::fs::write(new_file_name, file_bytes)?;
 
     Ok(())
