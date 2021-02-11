@@ -12,12 +12,14 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    yakuzaitem.cpp
 
 HEADERS += \
     backend.hpp \
     json.hpp \
-    mainwindow.h
+    mainwindow.h \
+    yakuzaitem.h
 
 FORMS += \
     mainwindow.ui

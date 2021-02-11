@@ -21,10 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
 //  connect(ui->majima_money, &QLineEdit::textChanged, this,
 //          [&](const QString &arg) { MainWindow::on_input_changed(arg, "majima_money"); });
 
-  QVector<QWidget *> elements_local{ui->save_button, ui->current_char,
-                                    ui->difficulty, ui->kiryu_money, ui->style_dod, ui->style_rush, ui->style_beast,
-                                   ui->style_mdos, ui->style_breaker, ui->style_slugger, ui->majima_money,
-                                   ui->outfit_dod, ui->outfit_dragon, ui->outfit_producer, ui->outfit_judgement, ui->outfit_new_hire};
+  this->set_global_input(false);
+
+  YakuzaItem *t = new YakuzaItem(ui->scrollArea, 1);
+
+
 
   std::map<std::string, QCheckBox *> outfits = {
       {"dod", ui->outfit_dod},
@@ -44,14 +45,15 @@ MainWindow::MainWindow(QWidget *parent)
       connect(value, &QCheckBox::stateChanged, this, lambda);
   }
 
-  elements = elements_local;
-
-  for (auto &w : elements) {
-    w->setEnabled(false);
-  }
 }
 
 MainWindow::~MainWindow() { delete ui; }
+
+void MainWindow::set_global_input(bool state) {
+    ui->general_groupbox->setEnabled(state);
+    ui->general_tab->setEnabled(state);
+    ui->save_button->setEnabled(state);
+}
 
 void MainWindow::initialize_ui_variables() {
   ui->current_char->setCurrentText(
@@ -76,9 +78,8 @@ void MainWindow::initialize_ui_variables() {
   ui->style_breaker->setChecked(savefile["style_breaker"]);
   ui->style_slugger->setChecked(savefile["style_slugger"]);
 
-  for (auto &w : elements) {
-    w->setEnabled(true);
-  }
+  this->set_global_input(true);
+
 }
 
 void MainWindow::on_load_button_clicked() {
@@ -118,9 +119,3 @@ void MainWindow::on_save_button_clicked() {
 void MainWindow::on_input_changed(const QString &arg, const std::string &name) {
   savefile[name] = arg.toStdString();
 }
-
-//void MainWindow::on_text_changed(const QPlainTextEdit * el, const std::string & name) {
-//    QString t = el->toPlainText();
-//    savefile[name] = t.toStdString();
-
-//}
