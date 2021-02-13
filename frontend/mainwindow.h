@@ -31,11 +31,15 @@ public:
   MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
-private:
+public:
   void on_comboBox_currentTextChanged(const QString &arg1);
-  void on_input_changed(const QString &arg, const std::string &name);
+
+  template<class T>
+  void on_input_changed(const T &arg, const std::string &name);
   void on_load_button_clicked();
   void on_save_button_clicked();
+
+private:
   void initialize_ui_variables();
   void set_global_input(bool state);
 //  void on_text_changed(const QPlainTextEdit * el, const std::string & name);
@@ -44,6 +48,6 @@ private:
   Ui::MainWindow *ui;
   json savefile;
   std::string filename;
-  QVector<QWidget *> elements;
+  std::vector<YakuzaItem> items;
 };
 #endif // MAINWINDOW_H

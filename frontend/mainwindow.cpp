@@ -9,23 +9,21 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->save_button, &QPushButton::clicked, this,
           &MainWindow::on_save_button_clicked);
   connect(ui->current_char, &QComboBox::currentTextChanged, this,
-          [&](const QString &arg) {
-            MainWindow::on_input_changed(arg, "current_char");
+          [=](const QString &arg) {
+            MainWindow::on_input_changed(arg.toStdString(), "current_char");
           });
   connect(ui->difficulty, &QComboBox::currentTextChanged, this,
-          [&](const QString &arg) {
-            MainWindow::on_input_changed(arg, "difficulty");
+          [=](const QString &arg) {
+            MainWindow::on_input_changed(arg.toStdString(), "difficulty");
           });
-//  connect(ui->kiryu_money, &QLineEdit::textChanged, this,
-//          [&](const QString &arg) { MainWindow::on_input_changed(arg, "kiryu_money"); });
-//  connect(ui->majima_money, &QLineEdit::textChanged, this,
-//          [&](const QString &arg) { MainWindow::on_input_changed(arg, "majima_money"); });
+  connect(ui->kiryu_money, &QLineEdit::textChanged, this,
+          [&](const QString &arg) { MainWindow::on_input_changed(arg.toInt(), "kiryu_money"); });
+  connect(ui->majima_money, &QLineEdit::textChanged, this,
+          [&](const QString &arg) { MainWindow::on_input_changed(arg.toInt(), "majima_money"); });
 
   this->set_global_input(false);
 
-  YakuzaItem *t = new YakuzaItem(ui->scrollArea, 1);
-
-
+  std::unique_ptr<YakuzaItem> t = std::make_unique<YakuzaItem>(ui->scrollArea, 1);
 
   std::map<std::string, QCheckBox *> outfits = {
       {"dod", ui->outfit_dod},
@@ -39,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
       auto key_copy = key;
       auto value_copy = value;
       // This is maybe a bit unsafe
-      auto lambda = [key_copy, value_copy, this](int status) {
+      auto lambda = [=](__attribute__((unused)) int status) {
           this->savefile["outfit"][key_copy] = value_copy->isChecked();
       };
       connect(value, &QCheckBox::stateChanged, this, lambda);
@@ -116,6 +114,8 @@ void MainWindow::on_save_button_clicked() {
   backend::write_savegame(filename.c_str(), savefile.dump().c_str());
 }
 
-void MainWindow::on_input_changed(const QString &arg, const std::string &name) {
-  savefile[name] = arg.toStdString();
+void MainWindow::on_edit_items_button_clicked()
+{
+    auto dialog = std::make_unique<ItemDialog>(this);
+    dialog->exec();
 }
