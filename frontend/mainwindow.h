@@ -15,6 +15,8 @@
 #include <string>
 #include <map>
 #include "yakuzaitem.h"
+#include "itemdialog.h"
+#include "utils.h"
 
 using json = nlohmann::json;
 
@@ -31,16 +33,18 @@ public:
   MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
-public:
-  void on_comboBox_currentTextChanged(const QString &arg1);
 
-  template<class T>
-  void on_input_changed(const T &arg, const std::string &name);
+private slots:
+  void on_edit_items_button_clicked();
+
+private:
   void on_load_button_clicked();
   void on_save_button_clicked();
 
 private:
   void initialize_ui_variables();
+
+  // Useful to block input if a save isn't loaded yet.
   void set_global_input(bool state);
 //  void on_text_changed(const QPlainTextEdit * el, const std::string & name);
 

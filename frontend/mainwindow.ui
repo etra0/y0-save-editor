@@ -223,28 +223,18 @@
        </property>
       </widget>
      </widget>
-     <widget class="QScrollArea" name="scrollArea">
+     <widget class="QPushButton" name="edit_items_button">
       <property name="geometry">
        <rect>
-        <x>290</x>
-        <y>40</y>
-        <width>441</width>
-        <height>371</height>
+        <x>220</x>
+        <y>50</y>
+        <width>80</width>
+        <height>21</height>
        </rect>
       </property>
-      <property name="widgetResizable">
-       <bool>true</bool>
+      <property name="text">
+       <string>Edit Items</string>
       </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>439</width>
-         <height>369</height>
-        </rect>
-       </property>
-      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="majima_tab">

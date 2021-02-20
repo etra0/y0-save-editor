@@ -8,22 +8,20 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::on_load_button_clicked);
   connect(ui->save_button, &QPushButton::clicked, this,
           &MainWindow::on_save_button_clicked);
-  connect(ui->current_char, &QComboBox::currentTextChanged, this,
-          [=](const QString &arg) {
-            MainWindow::on_input_changed(arg.toStdString(), "current_char");
-          });
-  connect(ui->difficulty, &QComboBox::currentTextChanged, this,
-          [=](const QString &arg) {
-            MainWindow::on_input_changed(arg.toStdString(), "difficulty");
-          });
+  utils::bind_combobox(this, ui->current_char, savefile, "current_char");
+  utils::bind_combobox(this, ui->difficulty, savefile, "difficulty");
   connect(ui->kiryu_money, &QLineEdit::textChanged, this,
-          [&](const QString &arg) { MainWindow::on_input_changed(arg.toInt(), "kiryu_money"); });
+          [&](const QString &arg) {
+      auto v = arg.toDouble();
+      savefile["kiryu_money"] = static_cast<unsigned long>(v);
+  });
   connect(ui->majima_money, &QLineEdit::textChanged, this,
-          [&](const QString &arg) { MainWindow::on_input_changed(arg.toInt(), "majima_money"); });
+          [&](const QString &arg) {
+      auto v = arg.toDouble();
+      savefile["majima_money"] = static_cast<unsigned long>(v);
+  });
 
   this->set_global_input(false);
-
-  std::unique_ptr<YakuzaItem> t = std::make_unique<YakuzaItem>(ui->scrollArea, 1);
 
   std::map<std::string, QCheckBox *> outfits = {
       {"dod", ui->outfit_dod},
@@ -37,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
       auto key_copy = key;
       auto value_copy = value;
       // This is maybe a bit unsafe
-      auto lambda = [=](__attribute__((unused)) int status) {
+      auto lambda = [key_copy, value_copy, this]([[maybe_unused]] int status) {
           this->savefile["outfit"][key_copy] = value_copy->isChecked();
       };
       connect(value, &QCheckBox::stateChanged, this, lambda);
